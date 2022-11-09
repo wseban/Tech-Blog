@@ -13,8 +13,7 @@ router.get('/login', async (req, res) => {
             // include: [{ Model: Post }]
         })
         if (!userData) {
-            res.json({ message: 'Incorrect email or password. Please try again!' });
-            res.redirect('/signup');
+            res.json({ message: 'Please create an account!' });
             return;
         }
 
@@ -31,11 +30,27 @@ router.get('/login', async (req, res) => {
             req.session.loggedIn = true;
             console.log(req.session.cookie);
             res.json({ user: userData, message: 'You are now logged in!' });
+            res.redirect('/');
         });
     } catch (err) {
         console.log(err);
         res.status(500).json(err);
     }
 })
+
+router.post('/:id', async (req, res) => {
+    try {
+      const postData = await Post.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+        // include: userId
+      });
+      console.log(postData.dataValues);
+      res.json(postData);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
 module.exports = router;
