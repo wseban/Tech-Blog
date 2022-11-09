@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
       const postData = await Post.findAll({
-        include: [{ model: Comment }],
+        // include: [{ model: Comment }],
       });
       res.status(200).json(postData);
     } catch (err) {
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
         Where: {
             id: req.params.id
         },
-        include: [{ model: Comment }],
+        // include: [{ model: Comment }],
       });
       res.status(200).json(postData);
     } catch (err) {

@@ -9,17 +9,30 @@ router.get('/login', async (req, res) => {
             where: {
                 email: req.body.email
             },
+
             // include: [{ Model: Post }]
         })
         if (!userData) {
-            res
-              .status(400)
-              .json({ message: 'Incorrect email or password. Please try again!' });
+            res.json({ message: 'Incorrect email or password. Please try again!' });
+            res.redirect('/signup');
             return;
-          }
-        console.log(userData.dataValues);
-        res.json(userData);
-    }catch(err){
+        }
+
+        const validPassword = await userData.checkPassword(req.body.password);
+
+        if (!validPassword) {
+            res
+                .status(400)
+                .json({ message: 'Incorrect email or password. Please try again!' });
+            return;
+        }
+
+        req.session.save(() => {
+            req.session.loggedIn = true;
+            console.log(req.session.cookie);
+            res.json({ user: userData, message: 'You are now logged in!' });
+        });
+    } catch (err) {
         console.log(err);
         res.status(500).json(err);
     }
